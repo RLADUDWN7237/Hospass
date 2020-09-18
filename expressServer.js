@@ -66,6 +66,14 @@ app.get("/authTest", auth, function (req, res) {
   res.json("환영합니다 우리 고객님");
 });
 
+app.get("/main_2", function (req, res) {
+  res.render('main_2');
+});
+
+app.get("/logo", function (req, res) {
+  res.render("logo");
+});
+
 app.post("/login", function (req, res) {
   console.log("사용자 입력정보 :", req.body);
   var userEmail = req.body.userEmail;
