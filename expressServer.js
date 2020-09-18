@@ -88,7 +88,16 @@ app.get("/account", function (req, res) {
 
 app.get('/pay', function(req, res){
   res.render('pay');
-})
+});
+
+app.get("/gocoder_qrcode", function (req, res) {
+  res.render("gocoder_qrcode");
+});
+
+app.get("/receipt", function (req, res) {
+  res.render("receipt");
+});
+
 
 app.post("/login", function (req, res) {
   console.log("사용자 입력정보 :", req.body);
@@ -247,6 +256,20 @@ app.post("/list", auth, function (req, res) {
       });
     }
   });
+});
+
+
+app.post("/gocoder_qrcode", function (req, res) {
+  
+  var userId = ; //DB 레코드에 맞는 값 넣기
+  var sql = "SELECT prescription FROM user WHERE id=?";
+  connection.query(sql, function (error, results){
+    if(error) console.log('query is not excuted. select fail...\n' + err);
+    else {
+      console.log(results);
+      res.json(results);
+    } 
+  })
 });
 
 app.listen(3000, function () {
