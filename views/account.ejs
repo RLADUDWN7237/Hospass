@@ -184,6 +184,7 @@
                   '<td>'+imgSrc+'</td>'+
                   '<td>'+data.res_list[i].bank_name+'</td>'+
                   '<td>'+data.res_list[i].account_num_masked+'</td>'+
+                  '<td>'+data.res_list[i].fintech_use_num+'</td>'+
                   '</tr>'
               );
             }
@@ -215,10 +216,32 @@
       //은행이름과 핀테크 번호 가져오기
       bank_name=tdArray[1];
       account_num_masked=tdArray[2];
- 
+      fintech_use_num=tdArray[3];
+      
+      function pay(useFintechNo){
+          $.ajax({
+        url: "/withdraw",
+        type : 'POST',
+        headers : {
+            ourtoken : jwtToken
+        },
+        data : {
+            fin_use_num : useFintechNo,
+            to_fin_use_num : '' //병원계좌라고 가정(임의의 fin_use_num 넣기)
+        },
+        success:function(data){
+            console.log(data);
+            console.log("결제완료!");           
+        },
+        })
+      }
+
+      pay(fintech_use_num);
+      
     })
 
       $("#sendButton").click(function(){
+          console.log("결제완료!");
           window.location.href = "/receipt";
         })
 
