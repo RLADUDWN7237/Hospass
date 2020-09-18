@@ -9,8 +9,8 @@ var mysql = require("mysql");
 var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",   //자기 비밀번호로
-  database: "fintech2",
+  password: "!",   //자기 비밀번호로
+  database: "fintech",
 });
 
 connection.connect();
@@ -92,7 +92,7 @@ app.get('/pay', function(req, res){
 
 app.get("/gocoder_qrcode", function (req, res) {
   res.render("gocoder_qrcode");
-});
+}); 
 
 app.get("/receipt", function (req, res) {
   res.render("receipt");
@@ -209,7 +209,7 @@ app.post("/cancel", auth, function (req, res){
 
 app.post('/pay',function(req,res){
   
-  var userId = ; //DB 레코드에 맞는 값 넣기
+  var userId = 3; //DB 레코드에 맞는 값 넣기
   var sql = "SELECT * FROM user WHERE id = ?";
   connection.query(sql,[userId], function(err, result){
       
@@ -257,11 +257,41 @@ app.post("/list", auth, function (req, res) {
     }
   });
 });
+app.post("/list2", auth, function (req, res) {
+  var userId = req.decoded.userId;
+  var sql = "SELECT * FROM user WHERE id = ?";
+  connection.query(sql, [userId], function (err, results) {
+    if (err) {
+      console.error(err);
+      throw err;
+    } else {
+      console.log(("list 에서 조회한 개인 값 :", results));
+      var option = {
+        method: "GET",
+        url: "https://testapi.openbanking.or.kr/v2.0/user/me",
+        headers: {
+          Authorization: "Bearer " + '',//공동계좌 에세스토큰
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        //form 형태는 form / 쿼리스트링 형태는 qs / json 형태는 json ***
+        qs: {
+          user_seq_no: '', //공동계좌 시퀀스넘버 
+          //#자기 키로 시크릿 변경
+        },
+      };
+      request(option, function (error, response, body) {
+        var listResult = JSON.parse(body);
+        console.log(listResult);
+        res.json(listResult);
+      });
+    }
+  });
+});
 
 
 app.post("/gocoder_qrcode", function (req, res) {
   
-  var userId = ; //DB 레코드에 맞는 값 넣기
+   var userId = 16; //DB 레코드에 맞는 값 넣기
   var sql = "SELECT prescription FROM user WHERE id=?";
   connection.query(sql, function (error, results){
     if(error) console.log('query is not excuted. select fail...\n' + err);
@@ -282,7 +312,7 @@ app.post("/withdraw", auth, function (req, res) {
 
   var countnum = Math.floor(Math.random() * 1000000000) + 1;
   var transId = "" + countnum; //이용기관번호 본인것 입력
-  var sql = "SELECT prescription FROM user WHERE id=?";
+  var sql = "SELECT * FROM user WHERE id=?";
   
   connection.query(sql, [userId], function (err, results) {
     if (err) {

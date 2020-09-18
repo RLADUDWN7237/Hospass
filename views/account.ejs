@@ -54,18 +54,23 @@
         <main class="margin mt-0">
           <div class="dash-balance">
               <!-- Head -->
-
           </div>
-
+          <div class="container">
+            <div class="col-md-12">
+                <br>
+                <h2>입금계좌를 선택해주세요</h2>
+                Please select the account
+          </div>
           <section id="cart-view" >
             <div class="container" style="background-color: #ffffff;">
               <div class="row">
                 <div class="col-md-12">
                   <div class="cart-view-area">
                     <div class="cart-view-table aa-wishlist-table" style="background-color: white; ">
+                      등록된 본인 계좌
                       <form action="">
                         <div class="table-responsive" >
-                           <table class="table">
+                           <table class="table" style="border: 1px solid gold;">
                              <!-- <thead>
                                  <td>은행로고</td>
                                  <td>은행이름</td>
@@ -77,7 +82,26 @@
                              </tbody>
                            </table>
                          </div>
-                      </form>             
+                      </form>
+                      등록된 공동 계좌
+                      <form action="">
+                        <div class="table-responsive" >
+                           <table class="table" style="border: 1px solid gold;">
+                             <!-- <thead>
+                                 <td>은행로고</td>
+                                 <td>은행이름</td>
+                                 <td>은행계좌</td>
+                                 <td>은행핀테크번호</td>
+                             </thead> -->
+                             <tbody id='cardList2' >
+                              
+                             </tbody>
+                           </table>
+                         </div>
+                      </form>
+
+
+
                     </div>
                   </div>
                 </div>
@@ -184,13 +208,58 @@
                   '<td>'+imgSrc+'</td>'+
                   '<td>'+data.res_list[i].bank_name+'</td>'+
                   '<td>'+data.res_list[i].account_num_masked+'</td>'+
-                  '<td>'+data.res_list[i].fintech_use_num+'</td>'+
+                  '<td style="display:none;">'+data.res_list[i].fintech_use_num+'</td>'+
+                  '</tr>'
+              );
+            }
+          },
+        });
+
+
+        $.ajax({
+          url: "/list2",
+          type: "POST",
+          headers: {
+            ourtoken: jwtToken,
+          },
+          success: function (data) {
+            console.log(data.res_list);
+            for (var i = 0; i < data.res_list.length; i++) {
+              if(data.res_list[i].bank_code_std=='097'){
+                    imgSrc = '<img src="img/bank/openBank.jpg" alt="img">'
+                  }
+                  else if(data.res_list[i].bank_code_std=='003'){
+                    imgSrc = '<img src="img/bank/IBKbank.png" alt="img">'
+                  }
+                  else if(data.res_list[i].bank_code_std=='011'){
+                    imgSrc = '<img src="img/bank/NHbank.png" alt="img">'
+                  }
+                  else if(data.res_list[i].bank_code_std=='007'){
+                    imgSrc = '<img src="img/bank/ShBank.png" alt="img">'
+                  }
+                  else if(data.res_list[i].bank_code_std=='023'){
+                    imgSrc = '<img src="img/bank/SCbank.png" alt="img">'
+                  }
+                  else if(data.res_list[i].bank_code_std=='004'){
+                    imgSrc = '<img src="img/bank/KbBank.jpg" alt="img">'
+                  }
+                  else{
+                    imgSrc = '<img src="img/man/polo-shirt-1.png" alt="img">';
+                  }
+
+              $("#cardList2").append(
+                '<tr id="row"+i>'+
+                  '<td>'+imgSrc+'</td>'+
+                  '<td>'+data.res_list[i].bank_name+'</td>'+
+                  '<td>'+data.res_list[i].account_num_masked+'</td>'+
+                  '<td style="display:none;">'+data.res_list[i].fintech_use_num+'</td>'+
                   '</tr>'
               );
             }
           },
         });
       }
+
       $(document).on('click', '#cardList tr', function(){
       var tdArray = new Array();
       var tr = $(this);
@@ -203,6 +272,60 @@
         tdArray.push(td.eq(i).text());
       });
       //모든 테이블 색 초기화
+      $('#cardList').each(function(i){
+        $('#cardList tr').css( "background-color", "white" );
+      })
+      $('#cardList2').each(function(i){
+        $('#cardList2 tr').css( "background-color", "white" );
+      })
+
+      //선택 tr 색 변경
+      $(this).css( "background-color", "#D1EF9C" );
+      console.log("배열에 담긴 값 : "+tdArray[3]);
+      console.log("1번쨰 : "+tdArray[0]);
+      console.log("2번쨰 : "+tdArray[1]);
+      console.log("3번쨰 : "+tdArray[2]);
+      console.log("4번쨰 : "+tdArray[3]);
+      //은행이름과 핀테크 번호 가져오기
+      bank_name=tdArray[1];
+      account_num_masked=tdArray[2];
+      fintech_use_num=tdArray[3];
+      
+      function pay(useFintechNo){
+          $.ajax({
+        url: "/withdraw",
+        type : 'POST',
+        headers : {
+            ourtoken : jwtToken
+        },
+        data : {
+            fin_use_num : useFintechNo,
+            to_fin_use_num : '' //병원계좌라고 가정(임의의 fin_use_num 넣기)
+        },
+        success:function(data){
+            console.log(data);
+            console.log("결제완료!");           
+        },
+        })
+      }
+      pay(fintech_use_num);
+    })
+
+    $(document).on('click', '#cardList2 tr', function(){
+      var tdArray = new Array();
+      var tr = $(this);
+      var td = $(this).children();
+      // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+      console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+      //tr에 있는 모든 데이터
+      // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+      td.each(function(i){
+        tdArray.push(td.eq(i).text());
+      });
+      //모든 테이블 색 초기화
+      $('#cardList2').each(function(i){
+        $('#cardList2 tr').css( "background-color", "white" );
+      })
       $('#cardList').each(function(i){
         $('#cardList tr').css( "background-color", "white" );
       })
@@ -239,6 +362,9 @@
       pay(fintech_use_num);
       
     })
+
+
+
 
       $("#sendButton").click(function(){
           console.log("결제완료!");
