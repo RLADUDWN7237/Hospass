@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <metaname="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
-    <title>Hospass | payment</title>
+    <title>Hospass | diagnosis </title>
 
     <!-- Google font file. If you want you can change. -->
     <link
@@ -13,9 +13,8 @@
 
     <!-- Fontawesome font file css -->
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="/css/mainstyle.css">
-    <link rel="stylesheet" href="/css/menu.css">
+    
+
     <!-- Animate css file for css3 animations. for more : https://daneden.github.io/animate.css -->
     <!-- Only use animate action. If you dont use animation, you don't have to add.-->
     <link rel="stylesheet" type="text/css" href="css/animate.css" />
@@ -45,36 +44,21 @@
 
 
     <style type="text/css">
-        .doctor_box { width : 600px; height : 300px; border:1px solid; padding:10px;background-color: #fff; }
+        .diagnosis_box { width : 500px; height : 550px; padding:10px;background-color: #fff; float:left; margin-right:10px; }
     </style>
-    
 
     <style type="text/css">
-        .paymentbox { width : 600px; height : 300px; border:1px solid; padding:10px;background-color: #fff; }
+        .patient_box { width : 500px; height : 300px; border:1px solid; padding:10px;background-color: #fff; float:right; margin-bottom:10px; }
     </style>
+    
+    <style type="text/css">
+        .medical_history_box { width : 500px; height : 300px; border:1px solid; padding:10px;background-color: #fff; float:right; }
+    </style>
+
 
   </head>
 
-  
-
   <body>
-    <div class="menu-wrap">
-      <input type="checkbox" class="toggler">
-      <div class="hamburger"><div></div></div>
-      <div class="menu">
-        <div>
-          <div>
-            <ul>
-              <li><a href="main">메인화면</a></li>
-              <li><a href="login">로그아웃</a></li>
-              <li><a href="main_2">계좌등록</a></li>
-              <li><a href="main_2">계좌해지</a></li>
-              <li><a href="receipt_list">진료내역</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="wrapper">
       
       <div class="wrapper-inline"style="background-color: white; " >
@@ -89,58 +73,28 @@
           </div>
           
           <div id="chapter_select">
-            <center>
-            <div style="text-align:left;" class="doctor_box"; >
-              오늘의 진료 정보 및 의사의 조언은 다음과 같습니다.
-              <br>
-              <br>
-
-
-              <div style="text-align:left;"id="advise"> </div>
-              
-            </div>
-            </center>
-            <br>
-            <center>
-            <div class="paymentbox">
-                오늘의 진료 내역 및 금액 입니다.
-                <table border="1" bordercolor="black" width ="500" height="300" align = "center" >	<!-- ToDo 목록 -->
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>진료 정보</th>
-                      <th>금액</th>
-                    </tr>
-                    <tr>
-                      <td>1.</td>
-                      <td><div id="paymentinfo"> </div></td>
-                      <td><div id="payment"> </div></td>
-                    </tr>
-                    <tr>
-                      <td>2.</td>
-                      <td>x-ray</td>
-                      <td>20000</td>
-                    </tr>
-                    <tr>
-                      <td>총계</td>
-                      <td></td>
-                      <td>30000</td>
-                    </tr>
-                    
-                  </thead>
-                  <tbody></tbody>
-                </table>
+            <div style= "width : 1040px; height : 650px; border:1px solid; padding:10px;" >
+                <center>
+                <div class="diagnosis_box">
+                의사 소견
+                    <textarea id="inputbox" cols="50" rows="23"></textarea>
+                         
+                    </textarea>
+                </div>
+                </center>
+                <center>
+                <div class="patient_box">
+                    환자가 입력한 증상 
+                </div>
+                <div class="medical_history_box">
+                    환자의 병력
+                </div>
+                </center>
+                <center>
+                <div><button id="save">save</button></div>
                 
-            </div>
-            </center>
-
-        <div class="submit" >
-        <center>
-          <div id="payment_btn"></div>
-          <button type="button" id="pay_btn" onclick="login()">결제</button>
-        </center>
-        </div>
-        
+                <div id="result"></div>
+                </center>
 
 
        <!-- JQuery library file. requared all pages -->
@@ -150,28 +104,53 @@
        <script src="js/global.script.js"></script>
        <script>
            
-           fetchData();
-           function fetchData(){
-               
-               $.ajax({
-                   url:'/pay',
-                   type : 'POST',
-                   success:function(data){                  
-                       console.log(data[0]);
-                       
-                       var   blk   = document.getElementById("advise");
-                        blk.innerHTML  =  data[0].advise; 
-                       //$("#advise").text(txt_advise);
-                       $("#paymentinfo").text(data[0].paymentinfo);
-                       $("#payment").text(data[0].payment);
-                      
-                       }
-                   })
-           }
+            window.onload=function() {
+            document.getElementById("save").onclick=processText;
+            }
 
-           $("#pay_btn").click(function(){
-          window.location.href = "/account";
-        })
+           function processText() {
+            var txtBox = document.getElementById("inputbox");
+            var lines = txtBox.value.split("\n");
+
+            // generate HTML version of text
+            var resultString  = "<p>";
+            for (var i = 0; i < lines.length; i++) {
+            resultString += lines[i] + "<br />";
+            }
+            resultString += "</p>";
+
+            // print out to page
+            var   blk   = document.getElementById("result");
+            blk.innerHTML  =  resultString; 
+            
+            console.log(blk.innerHTML)
+
+            //db에 저장
+            var userAdvise = blk.innerHTML;
+            console.log(userAdvise)
+            
+            $.ajax({
+                url: "/diagnosis",
+                type: "POST",
+                data: {
+                    userAdvise: userAdvise
+                },
+                success: function (data) {
+                    if (data) {
+                        alert("저장이 완료되었습니다.");
+                    } else {
+                        alert("저장 실패");
+                }
+          }
+        });
+            
+            }
+
+            
+
+           
+           
+
        </script> 
 
 <!-- 

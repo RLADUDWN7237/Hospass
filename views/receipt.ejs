@@ -73,7 +73,7 @@
               <div class="receipt_box">
                 영수증 내용
                 
-                <table border="1" bordercolor="black" width ="500" height="300" align = "center"  >   <!-- ToDo 목록 -->
+                <table border="1" bordercolor="black" width ="500" height="300" align = "center"  >	<!-- ToDo 목록 -->
                   <thead>
                     <tr>
                       <th></th>
@@ -98,7 +98,7 @@
                     <tr>
                       <td>총 금액</td>
                       <td></td>
-                      <td>23,000</td>
+                      <td>30,000</td>
                     </tr>
                     <tr>
                       <td>부가세</td>
@@ -117,11 +117,11 @@
                 </table>
                 <br>
 
-                <table  width ="500" height="300" align = "center" >   <!-- ToDo 목록 -->
+                <table  width ="500" height="300" align = "center" >	<!-- ToDo 목록 -->
                   <thead>
                     <tr>
                       <th>결제 금액</th>
-                      <th>26,000원</th>
+                      <th>33,000원</th>
                     </tr>
                     <tr>
                       <th>결제 은행 </th>
@@ -144,7 +144,7 @@
                 <div class="prescription_box">
                 <div id="prescription"></div>  
                 <h1 style="text-align:center;"></h1>
-                <img src="img/qr.png" width="250" height="250" alt="" />
+                <img src="/img/qr.PNG" width="250" height="250" alt="" />
               
               <script src="https://code.jquery.com/jquery.min.js"></script>
               <script type="text/javascript" src="js/jquery.qrcode.js"></script>
@@ -157,49 +157,46 @@
              <script>
               fetchData1();
                 function fetchData1(){
-
-
               $.ajax({
                 url:'/gocoder_qrcode',
                 type : 'POST',
-                
                 success:function(data){
                                   
-                                  console.log(data[0]);
+                        console.log(data[0]);
                         //$("#prescription").text(data.prescription);
                         jQuery('#gcDiv').qrcode({
-                    render   : "table",
+                    render	: "table",
                     width : 250,
                     height : 250,
-                    text   : data[0].prescription
+                   
                   }
-              );
+              );                  
               }
               })}
    
             </script>
+
                <script>
            
                 fetchData();
                 function fetchData(){
                     
                     $.ajax({
-                        url:'/pay',
+                        url:'/receipt',
                         type : 'POST',
                         success:function(data){
                             
                             console.log(data[0]);
-                            $("#advice").text(data[0].advice);
+                        
                             $("#paymentinfo").text(data[0].paymentinfo);
                             $("#payment").text(data[0].payment);
-                            //$("#prescription").text(data[0].prescription);
                             }
                         })
-                }
-     
+                }     
      
              </script>
 
+             
        <!-- JQuery library file. requared all pages -->
        <script src="js/jquery-3.2.1.min.js"></script>
 
@@ -262,6 +259,8 @@
     <!-- Template global script file. requared all pages -->
     <script src="js/app-charts.js"></script>
     <script src="js/global.script.js"></script>
+
+        
 
   </body>
 </html>
