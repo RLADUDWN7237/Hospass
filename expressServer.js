@@ -7,10 +7,11 @@ const auth = require("./lib/auth");
 var mysql = require("mysql");
 
 var connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "!",   //자기 비밀번호로
-  database: "fintech",
+  host: "",
+  port: "",
+  user: "",
+  password: "",   //자기 비밀번호로
+  database: "",
 });
 
 connection.connect();
@@ -36,6 +37,10 @@ app.get("/login", function (req, res) {
   res.render("login");
 });
 
+app.get("/diagnosis", function (req, res) {
+	  res.render("diagnosis");
+});
+
 app.get('/authResult', function (req, res) {
   var authCode = req.query.code;
   console.log("인증코드 : ", authCode);
@@ -48,9 +53,9 @@ app.get('/authResult', function (req, res) {
     },
     form: {
       code: authCode,
-      client_id: "",   //사용자 값으로 변경
+      client_id: "",   		//사용자 값으로 변경
       client_secret: "",     //사용자 값으로 변경
-      redirect_uri: "http://localhost:3000/authResult",
+      redirect_uri: "http://115.85.180.54:3000/authResult",
       grant_type: "authorization_code"
     }, 
   };
@@ -209,8 +214,8 @@ app.post("/cancel", auth, function (req, res){
 
 app.post('/pay',function(req,res){
   
-  var userId = 3; //DB 레코드에 맞는 값 넣기
-  var sql = "SELECT * FROM user WHERE id = ?";
+  var userId = 1; //DB 레코드에 맞는 값 넣기
+  var sql = "SELECT * FROM receipt WHERE user = ?";
   connection.query(sql,[userId], function(err, result){
       
       if(err) throw err;
@@ -291,10 +296,10 @@ app.post("/list2", auth, function (req, res) {
 
 app.post("/gocoder_qrcode", function (req, res) {
   
-   var userId = 16; //DB 레코드에 맞는 값 넣기
-  var sql = "SELECT prescription FROM user WHERE id=?";
+   var userId = 1; //DB 레코드에 맞는 값 넣기
+  var sql = "SELECT * FROM hospass_db.receipt WHERE user=?";
   connection.query(sql, function (error, results){
-    if(error) console.log('query is not excuted. select fail...\n' + err);
+    if(error) console.log('query is not excuted. select fail...\n');
     else {
       console.log(results);
       res.json(results);
@@ -401,6 +406,30 @@ app.post("/withdraw", auth, function (req, res) {
     }
   });
 });
+
+app.post('/diagnosis', function(req, res){
+	  var userAdvise = req.body.userAdvise;
+	//  console.log(userAdvise)
+	  var sql = "UPDATE receipt SET advise=? WHERE user = '1'"
+	  connection.query(sql,[userAdvise], function (error, results, fields) {
+		        if (error) throw error;
+		        res.json('저장완료');
+		    });
+})
+
+app.post('/receipt',function(req,res){
+	  
+	  var userId = 1;
+	  var sql = "SELECT * FROM hospass_db.receipt WHERE user = ?";
+	  connection.query(sql,[userId], function(err, result){
+		        
+		        if(err) throw err;
+		        else{
+				          res.json(result);
+				      }        
+		        console.log(result);
+		    })
+})
 
 app.listen(3000, function () {
   console.log("Example app listening at http://localhost:3000");
