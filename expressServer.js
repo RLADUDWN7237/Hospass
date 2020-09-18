@@ -82,6 +82,14 @@ app.get("/cancel", function (req, res) {
   res.render("cancel");
 });
 
+app.get("/account", function (req, res) {
+  res.render("account");
+});
+
+app.get('/pay', function(req, res){
+  res.render('pay');
+})
+
 app.post("/login", function (req, res) {
   console.log("사용자 입력정보 :", req.body);
   var userEmail = req.body.userEmail;
@@ -190,6 +198,56 @@ app.post("/cancel", auth, function (req, res){
   });
 });
 
+app.post('/pay',function(req,res){
+  
+  var userId = ; //DB 레코드에 맞는 값 넣기
+  var sql = "SELECT * FROM user WHERE id = ?";
+  connection.query(sql,[userId], function(err, result){
+      
+      if(err) throw err;
+      else{
+          res.json(result);
+      // var advise = result[0].userAdvise;
+      // var paymentinfo = result[0].userPaymentInfo;
+      // var payment = result[0].userPayment;
+      // var prescription = result[0].userPrescription;
+      
+      }        
+      
+      console.log(result);
+  })
+})
+
+app.post("/list", auth, function (req, res) {
+  var userId = req.decoded.userId;
+  var sql = "SELECT * FROM user WHERE id = ?"; 
+  connection.query(sql, [userId], function (err, results) {
+    if (err) {
+      console.error(err);
+      throw err;
+    } else {
+      console.log(("list 에서 조회한 개인 값 :", results));
+      var option = {
+        method: "GET",
+        url: "https://testapi.openbanking.or.kr/v2.0/user/me",
+        headers: {
+          Authorization: "Bearer " + results[0].accesstoken,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        //form 형태는 form / 쿼리스트링 형태는 qs / json 형태는 json ***
+        qs: {
+          user_seq_no: results[0].userseqno,
+          //#자기 키로 시크릿 변경
+        },
+      };
+      request(option, function (error, response, body) {
+        var listResult = JSON.parse(body);
+        console.log(listResult);
+        res.json(listResult);
+      });
+    }
+  });
+});
 
 app.listen(3000, function () {
   console.log("Example app listening at http://localhost:3000");
