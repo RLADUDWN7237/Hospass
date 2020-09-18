@@ -74,6 +74,10 @@ app.get("/logo", function (req, res) {
   res.render("logo");
 });
 
+app.get("/reservation", function (req, res) {
+  res.render('reservation');
+});
+
 app.post("/login", function (req, res) {
   console.log("사용자 입력정보 :", req.body);
   var userEmail = req.body.userEmail;
