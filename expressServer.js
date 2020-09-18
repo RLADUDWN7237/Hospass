@@ -78,6 +78,10 @@ app.get("/reservation", function (req, res) {
   res.render('reservation');
 });
 
+app.get("/cancel", function (req, res) {
+  res.render("cancel");
+});
+
 app.post("/login", function (req, res) {
   console.log("사용자 입력정보 :", req.body);
   var userEmail = req.body.userEmail;
@@ -148,6 +152,43 @@ app.post("/signup", function (req, res) {
   );
 });
 
+
+
+app.post("/cancel", auth, function (req, res){
+  var userId = req.decoded.userId;
+  var fin_use_num = req.body.fin_use_num;
+  var countnum = Math.floor(Math.random() * 1000000000) + 1;
+  var transId = "" + countnum;    //사용자 입력
+
+  console.log("유저 아이디, 핀테크번호 : ", userId, fin_use_num);
+  var sql = "SELECT * FROM user WHERE id = ?";
+  connection.query(sql, [userId], function (err, results) {
+    if (err) {
+      console.error(err);
+      throw err;
+    } else {
+      console.log(("list 에서 조회한 개인 값 :", results));
+      var option = {
+        method: "POST",
+        url: "https://testapi.openbanking.or.kr/v2.0/account/cancel",
+        headers: {
+          Authorization: "Bearer " + results[0].accesstoken,
+          "Content-Type": "application/json",
+        },
+        //form 형태는 form / 쿼리스트링 형태는 qs / json 형태는 json ***
+        json: {
+          bank_tran_id: transId,
+          scope: "transfer",
+          fintech_use_num: fin_use_num          
+          },
+      };
+      request(option, function (error, response, body) {
+        console.log(body);
+        res.json(body);
+      });
+    }
+  });
+});
 
 
 app.listen(3000, function () {
