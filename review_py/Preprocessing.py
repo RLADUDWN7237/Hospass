@@ -35,6 +35,7 @@ class Preprocessing:
             SW.add(i)
         with open(self.stwFile, 'rt', encoding='utf8') as f:
             for word in f:
+                word = word.rstrip('\n')
                 SW.add(word)
 
         return SW

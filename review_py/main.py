@@ -5,7 +5,6 @@ from extract import Extract
 from insert import Insert
 
 if __name__ == "__main__":
-    print(sys.argv[0])
     extract = Extract(user='hospass_db', pwd='hospass123!@',
                       host='db-4s3h9.cdb.ntruss.com', db_name='hospass_db', doctor=sys.argv[1])
     extract.call()
