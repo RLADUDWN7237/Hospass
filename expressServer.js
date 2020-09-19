@@ -8,10 +8,9 @@ var mysql = require("mysql");
 
 var connection = mysql.createConnection({
   host: "",
-  port: "",
-  user: "",
+  user: "hospass_db",
   password: "",   //자기 비밀번호로
-  database: "",
+  database: "hospass_db",
 });
 
 connection.connect();
@@ -38,7 +37,11 @@ app.get("/login", function (req, res) {
 });
 
 app.get("/diagnosis", function (req, res) {
-	  res.render("diagnosis");
+  res.render("diagnosis");
+});
+
+app.get("/share_account", function (req, res) {
+  res.render("share_account");
 });
 
 app.get('/authResult', function (req, res) {
@@ -275,12 +278,12 @@ app.post("/list2", auth, function (req, res) {
         method: "GET",
         url: "https://testapi.openbanking.or.kr/v2.0/user/me",
         headers: {
-          Authorization: "Bearer " + '',//공동계좌 에세스토큰
+          Authorization: "Bearer " + results[0].t_accesstoken,//공동계좌 에세스토큰
           "Content-Type": "application/x-www-form-urlencoded",
         },
         //form 형태는 form / 쿼리스트링 형태는 qs / json 형태는 json ***
         qs: {
-          user_seq_no: '', //공동계좌 시퀀스넘버 
+          user_seq_no: results[0].t_userseqno, //공동계좌 시퀀스넘버 
           //#자기 키로 시크릿 변경
         },
       };
