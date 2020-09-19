@@ -1,20 +1,23 @@
 import pymysql
 import pickle
 
+
 class Extract:
-    def __init__(self, user, pwd, host, db_name, doctor):
+    def __init__(self, user, pwd, host, db_name, doctor, charset):
         self.user = user
         self.pwd = pwd
         self.host = host
         self.db_name = db_name
         self.doctor = doctor
+        self.charset = charset
 
     def connect(self):
         self.db = pymysql.connect(  # dtype == char
             user=self.user,
             passwd=self.pwd,
             host=self.host,
-            db=self.db_name
+            db=self.db_name,
+            charset=self.charset
         )
         self.cursor = self.db.cursor(pymysql.cursors.DictCursor)
 
