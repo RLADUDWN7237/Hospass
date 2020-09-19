@@ -1,12 +1,12 @@
 import pymysql
-
+import pickle
 
 class Extract:
     def __init__(self, user, pwd, host, db_name, doctor):
         self.user = user
         self.pwd = pwd
         self.host = host
-        self.db_name = db
+        self.db_name = db_name
         self.doctor = doctor
 
     def connect(self):
@@ -27,12 +27,11 @@ class Extract:
     def _chToTxt(self):
         self.result = []
         for review in self.reviews:
-            self.result.append(review['review'])
+            self.result.append(review['review']+'\n')
 
     def saveAsTxt(self):
-        with open("review.pk", "wb", encoding='utf-8') as f:
-            for review in result:
-                review.write(review + '\n')
+        with open("review.pk", "wb") as f:
+            pickle.dump(self.reviews, f)
 
     def get_reviews(self):
         return self.reviews

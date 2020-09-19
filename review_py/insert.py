@@ -6,7 +6,7 @@ class Insert:
         self.user = user
         self.pwd = pwd
         self.host = host
-        self.db_name = db
+        self.db_name = db_name
         self.doctor = doctor
         self.keywords = keywords
 
@@ -23,10 +23,9 @@ class Insert:
         key = ""
         for keyword in self.keywords:
             key += keyword
-            key += " "
-        sql = "UPDATE hospass_db.reveiw SET keyword={} WHERE doctor={}".format(
-            key, self.doctor)
-        self.cursor.execute(sql)
+            key += ' '
+        sql = "UPDATE hospass_db.doctor SET keyword=%s WHERE id=%s"
+        self.cursor.execute(sql,(key,self.doctor))
         self.db.commit()
 
     def call(self):

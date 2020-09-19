@@ -35,6 +35,11 @@
    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="plugins/turbo-slider/turbo.css">
 
+
+	<style type="text/css">
+        .patient_box { padding:10px;background-color: #fff; float:left; margin-right:10px; }
+	    </style>
+
 </head>
 
 <body>
@@ -165,9 +170,6 @@
                                     
                              
                                 </div>
-                                
-                                
-                          
                        </div>     
                    </div>
                  </div>
@@ -194,7 +196,16 @@
                                     </div>
                                     
                         </div>
-                        
+                       
+
+			
+			<div class="patient_box">
+			<h4 class="mt-0">증상을 입력해 주세요</h4>
+			<textarea id="inputbox" cols="50" rows="10"></textarea>                     
+			
+			</div>
+
+
                         <button class="button circle darkblue block" data-popup="standartPopup">Make Reservation!</button>
                         
                         
@@ -215,8 +226,9 @@
          </div>
          <div class="popup-footer">
             
-            <button class="button" data-dismiss="true">OK</button>
-         </div>
+            <button id = "reserv_btn" class="button" data-dismiss="true">OK</button>
+	    <div id="result"></div>
+	 </div>
       </div>
    </div>
    <!--POPUP HTML CONTENT END -->          
@@ -264,7 +276,48 @@
    <script src="js/global.script.js"></script>
 
 
+   <script>
 
+	   window.onload=function() {
+		    document.getElementById("reserv_btn").onclick=processText;
+	   }
+
+           function processText() {
+               var txtBox = document.getElementById("inputbox");
+               var lines = txtBox.value.split("\n");
+		               // generate HTML version of text
+               var resultString  = "<p>";
+               for (var i = 0; i < lines.length; i++) {
+               resultString += lines[i] + "<br />";
+               }
+               resultString += "</p>";
+               // print out to page
+               var   blk   = document.getElementById("result");
+               blk.innerHTML  =  resultString; 
+               
+               console.log(blk.innerHTML)
+               //db에 저장
+               var userSymptom = blk.innerHTML;
+               console.log("userSymptom" + userSymptom)
+               
+               $.ajax({
+                   url: "/reservation",
+                   type: "POST",
+                   data: {
+                       userSymptom: userSymptom
+                   },
+                   success: function (data) {
+                       if (data) {
+                           alert("저장이 완료되었습니다.");
+                       } else {
+                           alert("저장 실패");
+                   }
+             }
+           });
+              
+           }
+
+   </script>
 </body>
 
 </html>
