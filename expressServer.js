@@ -180,7 +180,7 @@ app.post("/cancel", auth, function (req, res){
   var userId = req.decoded.userId;
   var fin_use_num = req.body.fin_use_num;
   var countnum = Math.floor(Math.random() * 1000000000) + 1;
-  var transId = "" + countnum;    //사용자 입력
+  var transId = "T991637220U" + countnum;    //사용자 입력
 
   console.log("유저 아이디, 핀테크번호 : ", userId, fin_use_num);
   var sql = "SELECT * FROM user WHERE id = ?";
@@ -430,6 +430,17 @@ app.post('/receipt',function(req,res){
 		        console.log(result);
 		    })
 })
+
+app.post('/reservation', function(req, res){
+	  console.log("지상잉");
+	  var userSymptom = req.body.userSymptom;
+	  console.log(userSymptom)
+          var sql = "UPDATE receipt SET symptom=? WHERE user = '1'"
+          connection.query(sql,[userSymptom], function (error, results, fields) {
+          if (error) throw error;
+          res.json('저장완료');
+          });
+          })
 
 app.listen(3000, function () {
   console.log("Example app listening at http://localhost:3000");

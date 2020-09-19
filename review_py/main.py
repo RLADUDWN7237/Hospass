@@ -5,18 +5,23 @@ from extract import Extract
 from insert import Insert
 
 if __name__ == "__main__":
+    print(sys.argv[0])
     extract = Extract(user='hospass_db', pwd='hospass123!@',
-                      host='db-4s3h9.cdb.ntruss.com', db_name='hospass_db', doctor=sys.argv[0])
+                      host='db-4s3h9.cdb.ntruss.com', db_name='hospass_db', doctor=sys.argv[1])
     extract.call()
     extracted = extract.get_reviews()
-    text = Preprocessing('data/review.pk', 'data/stopwords.txt')
+    #print(extract.result)
+    text = Preprocessing('review.pk', 'data/stopwords.txt')
     text.text_tokenizing('noun')
     tokenized = text.tokenized_corpus
+   # print(text.stopwords)
+    #print(text.doc)
+    #print(tokenized)
     tm = TopicModeling(tokenized)
     tm.build_doc_term_mat()
     tm.update_topic_words()
     topics = tm.get_topic_words()
 
     insert = Insert(user='hospass_db', pwd='hospass123!@', host='db-4s3h9.cdb.ntruss.com',
-                    db_name='hospass_db', doctor=sys.argv[0], keywords=topics)
+                    db_name='hospass_db', doctor=sys.argv[1], keywords=topics)
     insert.call()

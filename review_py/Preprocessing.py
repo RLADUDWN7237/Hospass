@@ -21,8 +21,10 @@ class Preprocessing:
         corpus = []
         with open(self.txtfile, 'rb') as f:
             temp_corpus = pickle.load(f)
+            #print(temp_corpus)
         for page in temp_corpus:
-            corpus += page
+            corpus.append(page['review'])
+            #print(page['review'])
 
         return corpus
 
@@ -31,7 +33,7 @@ class Preprocessing:
         SW = set()
         for i in string.punctuation:
             SW.add(i)
-        with open(self.stwFile, encoding='UTF-8') as f:
+        with open(self.stwFile, 'rt', encoding='utf8') as f:
             for word in f:
                 SW.add(word)
 
@@ -41,7 +43,7 @@ class Preprocessing:
         cleaned_docs = []
         for text in self.doc:
             temp_doc = re.sub("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]", "", text)
-            cleaned_docs.append(temp_doc)
+            cleaned_docs.append(text)
 
         self.corpus = cleaned_docs
 
