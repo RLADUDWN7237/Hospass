@@ -1,11 +1,9 @@
-import string
-import warnings
-from gensim import corpora
 from gensim import models
 from konlpy.tag import Mecab
 import numpy as np
 import re
 import pickle
+import string
 mecab = Mecab()
 
 
@@ -21,10 +19,8 @@ class Preprocessing:
         corpus = []
         with open(self.txtfile, 'rb') as f:
             temp_corpus = pickle.load(f)
-            #print(temp_corpus)
         for page in temp_corpus:
             corpus.append(page['review'])
-            #print(page['review'])
 
         return corpus
 
