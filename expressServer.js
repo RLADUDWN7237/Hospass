@@ -4,6 +4,8 @@ const request = require("request");
 const jwt = require("jsonwebtoken");
 const auth = require("./lib/auth");
 
+let {PythonShell} = require('python-shell') 
+
 var mysql = require("mysql");
 
 var connection = mysql.createConnection({
@@ -105,6 +107,56 @@ app.get("/gocoder_qrcode", function (req, res) {
 app.get("/receipt", function (req, res) {
   res.render("receipt");
 });
+
+app.get('/review', function(req, res){
+	  res.render('review');
+})
+
+app.post('/review',function(req,res){
+	  console.log("리뷰의 시작------------------------");
+	  var a=1;
+/*	  var t = req.body.title
+	    var sql2 = "SELECT id FROM doctor WHERE name =? ";
+	      connection.query(sql2,[t], function(err, result){
+	          
+	                  if(err) throw err;
+	                    else{
+	                        a = result[0].id;
+	                        }        
+	                         
+	                                console.log("id쿼리"+ a);
+	                              })
+	                             
+*/		
+
+	  var options = {
+		      mode : 'text',
+		      pythonPath:'',
+		      pythonOptions : ['-u'],
+		      scriptPath:'./review_py',
+		      args:[a]
+		    };
+
+	  PythonShell.run('main.py',options, function(err, results){
+		      if(err) throw err;
+		      
+		    });
+
+
+	  
+	  var sql = "SELECT doctor.id, doctor.name, doctor.keyword, review.review FROM doctor, review WHERE review.doctor=doctor.id AND doctor.name = '새로운정형외과'";
+	 
+	  connection.query(sql, function(err, result){
+		        
+		        if(err) throw err;
+		        else{
+				          res.json(result);
+				          console.log(result);
+				      }        
+		       
+		    })
+})
+
 
 
 app.post("/login", function (req, res) {

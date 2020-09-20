@@ -135,7 +135,21 @@
                 // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
                 ps.keywordSearch( keyword, placesSearchCB); 
             }
-            
+
+
+	    function a(title){
+	             $.ajax({
+	                    url: "/review",
+	                    type : 'POST',
+	                    data : {title:title},
+	                success:function(data){
+	                    console.log(data);
+		                   },
+	               })
+	          }
+
+
+
             // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
             function placesSearchCB(data, status, pagination) {
                 if (status === kakao.maps.services.Status.OK) {
@@ -201,7 +215,8 @@
                         kakao.maps.event.addListener(marker, 'click', function() {
                          // 마커 위에 인포윈도우를 표시합니다
                         infowindow.open(map, marker);  
-                        processHosname(title);
+                        a(title);
+			window.location.href = "/review";
                         
 
                         }); 
@@ -330,26 +345,26 @@
             
             
 
-            function processHosname(title){
-                var hosName = title;
-
-                console.log(hosName);
-
-                $.ajax({
-                        url: "/main",
-                        type: "POST",
-                        data: {
-                            hosName: hosName
-                        },
-                        success: function (data) {
-                            if (data) {
-                                alert("저장이 완료되었습니다.");
-                            } else {
-                                alert("저장 실패");
-                        }
-                    }
-                });
-            }
+            //function processHosname(title){
+              //  var hosName = title;
+//
+  //              console.log(hosName);
+//
+  //              $.ajax({
+    //                    url: "/main",
+     //                   type: "POST",
+       //                 data: {
+       //                     hosName: hosName
+         //               },
+           //             success: function (data) {
+             //               if (data) {
+               //                 alert("저장이 완료되었습니다.");
+                 //           } else {
+                   //             alert("저장 실패");
+                     //   }
+                   // }
+               // });
+            //}
 
             </script>
 
