@@ -9,9 +9,9 @@ let {PythonShell} = require('python-shell')
 var mysql = require("mysql");
 
 var connection = mysql.createConnection({
-  host: "db-4s3h9.cdb.ntruss.com",
+  host: "",
   user: "hospass_db",
-  password: "hospass123!@",   //자기 비밀번호로
+  password: "",   //자기 비밀번호로
   database: "hospass_db",
 });
 
@@ -58,8 +58,8 @@ app.get('/authResult', function (req, res) {
     },
     form: {
       code: authCode,
-      client_id: "rimj9uTJYMs8F1wW7xfSqDtirHOgWzP0x6Gtb0eK",   		//사용자 값으로 변경
-      client_secret: "aulHkwkFPRrpH35tz6FolBev6zVF3NTGPsgH2sLy",     //사용자 값으로 변경
+      client_id: "",   		//사용자 값으로 변경
+      client_secret: "",     //사용자 값으로 변경
       redirect_uri: "http://115.85.180.54:3000/authResult",
       grant_type: "authorization_code"
     }, 
