@@ -3,14 +3,15 @@ from Preprocessing import Preprocessing
 import sys
 from extract import Extract
 from insert import Insert
-
+import os
 if __name__ == "__main__":
     extract = Extract(user='hospass_db', pwd='hospass123!@',
                       host='db-4s3h9.cdb.ntruss.com', db_name='hospass_db', doctor=sys.argv[1])
     extract.call()
     extracted = extract.get_reviews()
+    print(os.getcwd())
     #print(extract.result)
-    text = Preprocessing('review.pk', 'data/stopwords.txt')
+    text = Preprocessing('review.pk', '/root/hospass/Hospass/review_py/data/stopwords.txt')
     text.text_tokenizing('noun')
     tokenized = text.tokenized_corpus
    # print(text.stopwords)
